@@ -1,0 +1,11 @@
+package br.com.fiap.plataformaStreaming.controller;
+
+
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/api/filme")
+public class FilmeController {
+
+}
