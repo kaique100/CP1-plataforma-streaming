@@ -24,6 +24,14 @@ public class Filme {
     private String diretor;
     private String genero;
 
+    public Filme(FilmeDTO filmeDTO) {
+        this.titulo = filmeDTO.titulo();
+        this.descricao = filmeDTO.descricao();
+        this.anoLancamento = filmeDTO.anoLancamento();
+        this.diretor = filmeDTO.diretor();
+        this.genero = filmeDTO.genero();
+    }
+
     public void atualizarInformacoes(FilmeUpdateDTO filmeUpdate) {
         if (filmeUpdate.titulo() != null){
             this.titulo = filmeUpdate.titulo();

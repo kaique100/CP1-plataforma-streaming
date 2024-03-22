@@ -8,6 +8,7 @@ import br.com.fiap.plataformaStreaming.repository.FilmeRepository;
 
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -19,14 +20,9 @@ public class FilmeController {
     private FilmeRepository repository;
 
     @PostMapping
-    public Filme createFilme(@RequestBody @Valid FilmeDTO filmeDTO){
-        Filme filme = new Filme();
-        filme.setTitulo(filmeDTO.titulo());
-        filme.setDescricao(filmeDTO.descricao());
-        filme.setAnoLancamento(filmeDTO.anoLancamento());
-        filme.setDiretor(filmeDTO.diretor());
-        filme.setGenero(filmeDTO.genero());
-        return repository.save(filme);
+    public ResponseEntity<Filme> createFilme(@RequestBody @Valid FilmeDTO filmeDTO){
+        Filme filme = repository.save(new Filme(filmeDTO));
+        return ResponseEntity.ok(filme);
     }
 
     @GetMapping("/{id}")
