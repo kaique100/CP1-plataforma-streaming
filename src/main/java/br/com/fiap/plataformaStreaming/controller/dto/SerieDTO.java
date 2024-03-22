@@ -1,28 +1,27 @@
 package br.com.fiap.plataformaStreaming.controller.dto;
 
+import br.com.fiap.plataformaStreaming.model.Episodio;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class SerieDTO {
-    @NotBlank
-    private String titulo;
+public record SerieDTO(
+        @NotNull
+        Long id,
 
-    @NotBlank
-    private String descricao;
+        @NotBlank
+        String titulo,
 
-    @NotNull
-    private Integer anoLancamento;
+        @NotBlank
+        String descricao,
 
-    @NotBlank
-    private String genero;
+        @NotNull
+        Integer anoLancamento,
 
-    @NotNull @Valid
-    private EpisodioDTO episodios;
+        @NotBlank
+        String genero,
+
+        @NotNull @Valid
+        Episodio episodios
+) {
 }
