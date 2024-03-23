@@ -29,7 +29,7 @@ public class Serie {
     private String genero;
 
     @OneToMany(mappedBy = "serie", cascade = CascadeType.ALL)
-    private List<Episodio> episodios = new ArrayList<>();;
+    private List<Episodio> episodios = new ArrayList<>();
 
     public Serie(SerieDTO serieDTO) {
         this.titulo = serieDTO.titulo();
@@ -61,7 +61,22 @@ public class Serie {
         }
     }
 
-//    public void atualizarInformacoes(SerieUpdateDTO serieUpdate){
-//
-//    }
+    public void atualizarInformacoes(SerieUpdateDTO serieUpdateDTO) {
+        if (serieUpdateDTO.titulo() != null){
+            this.titulo = serieUpdateDTO.titulo();
+        }
+
+        if (serieUpdateDTO.descricao() != null){
+            this.descricao = serieUpdateDTO.descricao();
+        }
+
+        if (serieUpdateDTO.anoLancamento() != null) {
+            this.anoLancamento = serieUpdateDTO.anoLancamento();
+        }
+
+        if (serieUpdateDTO.genero() != null){
+            this.genero = serieUpdateDTO.genero();
+        }
+
+    }
 }
