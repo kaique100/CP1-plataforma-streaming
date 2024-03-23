@@ -1,9 +1,9 @@
 package br.com.fiap.plataformaStreaming.model;
 
 
-import br.com.fiap.plataformaStreaming.controller.dto.EpisodioDTO;
-import br.com.fiap.plataformaStreaming.controller.dto.SerieDTO;
-import br.com.fiap.plataformaStreaming.controller.dto.SerieUpdateDTO;
+import br.com.fiap.plataformaStreaming.controller.dto.episode.EpisodeDTO;
+import br.com.fiap.plataformaStreaming.controller.dto.serie.SerieDTO;
+import br.com.fiap.plataformaStreaming.controller.dto.serie.SerieUpdateDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,7 +11,6 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Entity
@@ -23,60 +22,58 @@ public class Serie {
 
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private String titulo;
-    private String descricao;
-    private Integer anoLancamento;
-    private String genero;
+    private String title;
+    private String description;
+    private Integer releaseYear;
+    private String gender;
 
     @OneToMany(mappedBy = "serie", cascade = CascadeType.ALL)
-    private List<Episodio> episodios = new ArrayList<>();
+    private List<Episode> episodes = new ArrayList<>();
 
     public Serie(SerieDTO serieDTO) {
-        this.titulo = serieDTO.titulo();
-        this.descricao = serieDTO.descricao();
-        this.anoLancamento = serieDTO.anoLancamento();
-        this.genero = serieDTO.genero();
+        this.title = serieDTO.title();
+        this.description = serieDTO.description();
+        this.releaseYear = serieDTO.releaseYear();
+        this.gender = serieDTO.gender();
 
-        List<EpisodioDTO> episodiosDTO = serieDTO.episodios();
+        List<EpisodeDTO> episodiosDTO = serieDTO.episodes();
 
-        for (EpisodioDTO episodioDTO : episodiosDTO) {
-            Episodio episodio = new Episodio(episodioDTO);
-            episodio.setSerie(this); // Define a série para o episódio
-            episodios.add(episodio);
+        for (EpisodeDTO episodeDTO : episodiosDTO) {
+            Episode episode = new Episode(episodeDTO.title(), episodeDTO.numberEpisode(), episodeDTO.season());
+            episode.setSerie(this);
+            episodes.add(episode);
         }
     }
 
-    public Serie(String titulo, String descricao, Integer anoLancamento, String genero, List<EpisodioDTO> episodios) {
-        this.titulo = titulo;
-        this.descricao = descricao;
-        this.anoLancamento = anoLancamento;
-        this.genero = genero;
-        this.episodios = new ArrayList<>();
+    public Serie(String title, String description, Integer releaseYear, String gender, List<EpisodeDTO> episode) {
+        this.title = title;
+        this.description = description;
+        this.releaseYear = releaseYear;
+        this.gender = gender;
+        this.episodes = new ArrayList<>();
 
-        // Converter cada EpisodioDTO em Episodio e adicionar à lista de episodios
-        for (EpisodioDTO episodioDTO : episodios) {
-            Episodio episodio = new Episodio(episodioDTO.titulo(), episodioDTO.numeroEpisodio(), episodioDTO.temporada());
-            episodio.setSerie(this); // Define a série para o episódio
-            this.episodios.add(episodio);
+        for (EpisodeDTO episodeDTO : episode) {
+            Episode episodes = new Episode(episodeDTO.title(), episodeDTO.numberEpisode(), episodeDTO.season());
+            episodes.setSerie(this);
+            this.episodes.add(episodes);
         }
     }
 
-    public void atualizarInformacoes(SerieUpdateDTO serieUpdateDTO) {
-        if (serieUpdateDTO.titulo() != null){
-            this.titulo = serieUpdateDTO.titulo();
+    public void updateInformations(SerieUpdateDTO serieUpdateDTO) {
+        if (serieUpdateDTO.title() != null){
+            this.title = serieUpdateDTO.title();
         }
 
-        if (serieUpdateDTO.descricao() != null){
-            this.descricao = serieUpdateDTO.descricao();
+        if (serieUpdateDTO.description() != null){
+            this.description = serieUpdateDTO.description();
         }
 
-        if (serieUpdateDTO.anoLancamento() != null) {
-            this.anoLancamento = serieUpdateDTO.anoLancamento();
+        if (serieUpdateDTO.releaseYear() != null) {
+            this.releaseYear = serieUpdateDTO.releaseYear();
         }
 
-        if (serieUpdateDTO.genero() != null){
-            this.genero = serieUpdateDTO.genero();
+        if (serieUpdateDTO.gender() != null){
+            this.gender = serieUpdateDTO.gender();
         }
-
     }
 }

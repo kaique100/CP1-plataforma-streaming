@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class PlataformaStreamingApplication {
+public class PlataformStreamingApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(PlataformaStreamingApplication.class, args);
+		SpringApplication.run(PlataformStreamingApplication.class, args);
 	}
 
 }

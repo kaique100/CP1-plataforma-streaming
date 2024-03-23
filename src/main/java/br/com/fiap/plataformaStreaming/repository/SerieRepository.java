@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface SerieRepository extends JpaRepository<Serie, Long> {
-    List<Serie> findByTituloContainingOrGeneroContainingOrAnoLancamentoOrEpisodios_Temporada(String titulo, String genero, Integer anoLancamento, Integer temporada);
+    List<Serie> findByTitleContainingOrGenderContainingOrReleaseYearOrEpisodes_Season(String title, String gender, Integer releaseYear, Integer season);
 
 }

@@ -1,52 +1,76 @@
 package br.com.fiap.plataformaStreaming.service;
 
-import br.com.fiap.plataformaStreaming.controller.dto.SerieDTO;
-import br.com.fiap.plataformaStreaming.controller.dto.SerieUpdateDTO;
+import br.com.fiap.plataformaStreaming.controller.dto.serie.SerieDTO;
+import br.com.fiap.plataformaStreaming.controller.dto.serie.SerieListingDTO;
+import br.com.fiap.plataformaStreaming.controller.dto.serie.SerieUpdateDTO;
 import br.com.fiap.plataformaStreaming.model.Serie;
 import br.com.fiap.plataformaStreaming.repository.SerieRepository;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class SerieService {
-    private SerieRepository repository;
+    private final SerieRepository repository;
+    @Autowired
+    public SerieService(SerieRepository repository) {
+        this.repository = repository;
+    }
 
+    // Método para Criar a Serie
     public Serie createSerie(SerieDTO serieDTO){
-        Serie serie = new Serie(serieDTO.titulo(), serieDTO.descricao(), serieDTO.anoLancamento(), serieDTO.genero(), serieDTO.episodios());
-        serie = repository.save(serie);
-
-        return serie;
+        return repository.save(new Serie(serieDTO));
     }
 
-    public Serie buscarSeriePorId(Long id) {
-        return repository.getReferenceById(id);
+    // Método para Listar Todas as Series
+    public List<Serie> findAllSeries() {
+        return repository.findAll();
     }
 
-    public List<Serie> buscarSeriesPorTituloGeneroAnoOuQtdTemporadas(String titulo, String genero, Integer anoLancamento, Integer temporada) {
+    public SerieListingDTO findSerieById(Long id) {
+        Serie serie = repository.findById(id).orElseThrow(() -> new IllegalArgumentException(
+                "Série com o ID: [" + id + "] não foi encontrado, verifique e tente novamente!"));
+        return new SerieListingDTO(serie);
+    }
+
+    public List<Serie> findSeriesByTitleGenerYearOrSeasonQtt(String title, String gender, Integer releaseYear, Integer season) {
 
         // Verifica se algum parâmetro foi fornecido para a consulta
-        if (titulo == null && genero == null && anoLancamento == null && temporada == null) {
+        if (title == null && gender == null && releaseYear == null && season == null) {
             // Se nenhum parâmetro for fornecido, retorna todos os Series
             return repository.findAll();
         } else {
             // Se algum parâmetro for fornecido, realiza a consulta personalizada
-            return repository.findByTituloContainingOrGeneroContainingOrAnoLancamentoOrEpisodios_Temporada(titulo, genero, anoLancamento, temporada);
+            return repository.findByTitleContainingOrGenderContainingOrReleaseYearOrEpisodes_Season(title, gender, releaseYear, season);
         }
     }
 
-    public List<Serie> buscarTodasAsSeries() {
-        return repository.findAll();
+    public SerieDTO updateSerie(SerieUpdateDTO serieUpdateDTO){
+        // Busca a série pelo ID
+        Serie serie = repository.findById(serieUpdateDTO.id())
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Série com o ID: [" + serieUpdateDTO.id() + "] não foi encontrado, verifique e tente novamente!"));
+
+        serie.updateInformations(serieUpdateDTO);
+        repository.save(serie);
+        return new SerieDTO(serie);
     }
 
-    public Serie atualizarSerie(SerieUpdateDTO serieUpdateDTO){
-        Serie serie = repository.getReferenceById(serieUpdateDTO.id());
-        serie.atualizarInformacoes(serieUpdateDTO);
-        return serie;
-    }
+    public void deleteSerie(Long id) {
+        // Verifique se o ID da série solicitada existe
+        Optional<Serie> optionalSerie = repository.findById(id);
 
-    public void deletarSerie(Long id) {
-        repository.deleteById(id);
+        // Caso a série não existir irá mostrar essa mensagem abaixo.
+        if (optionalSerie.isEmpty()){
+            throw new IllegalArgumentException(
+                    "Série com o ID: [" + id + "] não foi encontrado, verifique e tente novamente!"
+            );
+        }
+        else{
+            // Caso a série exista irá deletar.
+            repository.deleteById(id);
+        }
     }
 }
